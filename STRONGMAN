@@ -1,0 +1,164 @@
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/CkyR8ePz", true))()
+local w = library:CreateWindow('Strongman Simulator')
+local Workout_Mul = 1
+-- GUI SECTION
+w:Section('Subscribe HereDiamondYT')
+ 
+-- GUI Toggles
+local FarmHydra = w:Toggle('Farm in Clash(1000t+)', {flag = "FarmHydra"})
+local FarmSpace = w:Toggle('Farm in Space(1000t+)', {flag = "FarmSpace"})
+local FarmStrength = w:Toggle('Lifting Weights', {flag = "FarmStrength"})
+w:Box("CUSTOM WORKOUT MULTIPIER(x100,200,300,1000)",{type = "number"},function(v)
+   Workout_Mul = v
+end)
+-- [[ GUI FUNCTIONS ]] --
+ 
+local Best_WorkOut,Best_Num = nil,0
+for i,v in pairs(game:GetService("Workspace").Areas:GetDescendants()) do
+   if v.Name == "WorkoutNumber" and v.Value > Best_Num then
+       Best_WorkOut,Best_Num = v.Parent.Parent,v.Value
+   end
+end
+
+
+function FarmSpace()
+       --clear
+ 
+ -- Local Player
+ local Plr = game:GetService("Players").LocalPlayer
+ local Char = Plr.Character
+ local RootPart = Char.HumanoidRootPart
+ local LowerTorso = Char.LowerTorso
+ 
+ -- Game Stuff
+--   local Loader = game:GetService("Workspace").BadgeColliders.FarmBadge
+ local Space_Item = game:GetService("Workspace").Areas["Area9_Space"].DraggableItems:FindFirstChildOfClass("MeshPart")
+ 
+ if Space_Item == nil then
+     -- We need to load part of the map in.
+     RootPart.CFrame = CFrame.new(-121,12,3526, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+     return true;
+ end
+ 
+ local Space = Space_Item:WaitForChild("InteractionPoint")
+ local Proximity = Space:FindFirstChild("ProximityPrompt")
+ 
+ -- Teleport and grab Hydra
+ RootPart.CFrame = Space.CFrame
+ wait(0.1)
+ Proximity:InputHoldBegin()
+ Proximity:InputHoldEnd()
+ 
+ -- Teleport us to the finish (I have some nasty hard coded stuff in here.)
+ repeat
+  for i,v in pairs(game:GetService("Workspace").PlayerDraggables[game.Players.LocalPlayer.UserId]:GetChildren()) do
+      v.Anchored = true
+      v.CFrame = game:GetService("Workspace").Areas["Area9_Space"].Goal.CFrame
+      wait()
+      v.Anchored = false
+  end
+  wait()
+until #game:GetService("Workspace").PlayerDraggables[game.Players.LocalPlayer.UserId]:GetChildren() < 1
+ 
+end
+
+
+
+function FarmHydra()
+       --clear
+ 
+ -- Local Player
+ local Plr = game:GetService("Players").LocalPlayer
+ local Char = Plr.Character
+ local RootPart = Char.HumanoidRootPart
+ local LowerTorso = Char.LowerTorso
+ 
+ -- Game Stuff
+--   local Loader = game:GetService("Workspace").BadgeColliders.FarmBadge
+ local Hydra_Item = game:GetService("Workspace").Areas["Area20_Princess"].DraggableItems:FindFirstChildOfClass("MeshPart")
+ 
+ if Hydra_Item == nil then
+     -- We need to load part of the map in.
+     RootPart.CFrame = CFrame.new(-92,49,14185, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+     return true;
+ end
+ 
+ local Hydra = Hydra_Item:WaitForChild("InteractionPoint")
+ local Proximity = Hydra:FindFirstChild("ProximityPrompt")
+ 
+ -- Teleport and grab Hydra
+ RootPart.CFrame = Hydra.CFrame
+ wait(0.000000000000000000000000000000000000000000000001)
+ Proximity:InputHoldBegin(10)
+ Proximity:InputHoldEnd(10)
+ 
+ -- Teleport us to the finish (I have some nasty hard coded stuff in here.)
+ repeat
+  for i,v in pairs(game:GetService("Workspace").PlayerDraggables[game.Players.LocalPlayer.UserId]:GetChildren()) do
+      v.Anchored = true
+      v.CFrame = game:GetService("Workspace").Areas["Area20_Princess"].Goal.CFrame
+      wait()
+      v.Anchored = false
+  end
+  wait()
+until #game:GetService("Workspace").PlayerDraggables[game.Players.LocalPlayer.UserId]:GetChildren() < 1
+ 
+end
+ 
+function FarmStrength()
+ 
+ -- Local Player
+ local Plr = game:GetService("Players").LocalPlayer
+ local Char = Plr.Character
+ local RootPart = Char.HumanoidRootPart
+ 
+ -- Game Stuff
+ local Gym = Best_WorkOut
+ local Proximity = Gym.ProximityPrompt
+ 
+ -- Teleport to Weights
+ RootPart.CFrame = Gym.CFrame
+ wait(0.1)
+ 
+ -- Start Workout
+ Proximity:InputHoldBegin()
+ wait(0.3)
+ Proximity:InputHoldEnd()
+ 
+while w.flags.FarmStrength do
+    wait(0.1)
+    game:GetService("ReplicatedStorage")["StrongMan_UpgradeStrength"]:InvokeServer(Workout_Mul)
+end
+ 
+ -- Jump to end Workout
+ Char.Humanoid.Jump = true
+end
+ 
+ 
+-- [[ GUI LISTENERS ]] --
+-- Farm Hydra
+spawn(function()
+ while wait() do
+     if w.flags.FarmSpace then
+         FarmSpace()
+     end
+ end
+end)
+ 
+-- Farm Hydra
+spawn(function()
+ while wait() do
+     if w.flags.FarmHydra then
+         FarmHydra()
+     end
+ end
+end)
+ 
+-- Farm Strength
+spawn(function()
+ while wait() do
+     if w.flags.FarmStrength then
+         FarmStrength()
+     end
+ end
+end)
